@@ -1,7 +1,7 @@
 <#
 subplace.ps1
 by kit
-update 3
+version 4 !!!
 :3
 #>
 
@@ -28,18 +28,28 @@ Write-Host "            ___.          .__                                       
 /____  >____/|___  /   __/|____(____  /\___  >___  > /\ |   __/____  >|___|
      \/          \/|__|             \/     \/    \/  \/ |__|       \/      " -ForegroundColor Blue
 
-$bootstrapper = "Bloxstrap"
-$roblox = "$($env:LOCALAPPDATA)\Bloxstrap\Roblox\Player\RobloxPlayerBeta.exe"
+$robloxPath = (Get-ItemProperty -Path "Registry::HKEY_CLASSES_ROOT\roblox-player\shell\open\command").'(default)' -replace '^"(.+?)".+', '$1'
+if ($robloxPath -eq "$($env:LOCALAPPDATA)\Bloxstrap\Bloxstrap.exe") {
+	$bootstrapper = "Bloxstrap"
+	$roblox = "$($env:LOCALAPPDATA)\Bloxstrap\Roblox\Player\RobloxPlayerBeta.exe"
+} else {
+	$bootstrapper = "Roblox"
+	$roblox = $robloxPath
+}
 $other = ""
-Write-Verbose "verbose mode enabled,,,"
+
 while ($true) {
 	$answer = Read-Host "join a subplace [1] settings [2] about [3]"
 	if ($answer -eq "3") {
-		Write-Host "subplace.ps1 version 3. i think. made by kit (https://vyz.ee/)"
+		Write-Host "subplace.ps1 version 4. i think. made by kit (https://vyz.ee/)"
     } elseif ($answer -eq "2") {
-		$bootstrapper = Read-Host "bootstrapper name? (default: Bloxstrap)"
-		$roblox = Read-Host "roblox location? (default: $($env:LOCALAPPDATA)\Bloxstrap\Roblox\Player\RobloxPlayerBeta.exe"
-		$other = Read-Host "things to append to the subplace uri? (leave blank if none)"
+		Write-Host "leave anything blank if u dont want to change it"
+		$bootstrapperQ = Read-Host "bootstrapper name? (default: detected (Bloxstrap or Roblox))"
+		if ($bootstrapperQ -ne "") { $bootstrapper = $bootstrapperQ }
+		$robloxQ = Read-Host "roblox location? (default: detected (Bloxstrap path or Roblox path))"
+		if ($robloxQ -ne "") { $roblox = $robloxQ }
+		$otherQ = Read-Host "things to append to the subplace uri? (leave blank if none)"
+		if ($otherQ -ne "") { $other = $otherQ }
 	} elseif ($answer -eq "1") {
 		break
 	}
@@ -96,11 +106,13 @@ while ($true) {
     }
     Start-Sleep -Seconds 1
 }
-Start-Sleep -Milliseconds 750
+Start-Sleep -Milliseconds 500
 
 netsh advfirewall firewall add rule name="subplace inbound" dir=in action=block program=$roblox enable=yes | Write-Verbose
 netsh advfirewall firewall add rule name="subplace outbound" dir=out action=block program=$roblox enable=yes | Write-Verbose
 Write-Host "internet disabled. joining subplace, do not press retry yet" -ForegroundColor Green
+
+# Start-Sleep -Milliseconds 200
 
 Start-Process "roblox://experiences/start?placeId=${subplace}${other}"
 
