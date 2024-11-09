@@ -31,12 +31,12 @@ Write-Host "            ___.          .__                                       
 $bootstrapper = "Bloxstrap"
 $roblox = "$($env:LOCALAPPDATA)\Bloxstrap\Roblox\Player\RobloxPlayerBeta.exe"
 $other = ""
-Write-Verbose = "verbose mode enabled,,,"
+Write-Verbose "verbose mode enabled,,,"
 while ($true) {
 	$answer = Read-Host "join a subplace [1] settings [2] about [3]"
 	if ($answer -eq "3") {
 		Write-Host "subplace.ps1 version 3. i think. made by kit (https://vyz.ee/)"
-    } else if ($answer -eq "2") {
+    } elseif ($answer -eq "2") {
 		$bootstrapper = Read-Host "bootstrapper name? (default: Bloxstrap)"
 		$roblox = Read-Host "roblox location? (default: $($env:LOCALAPPDATA)\Bloxstrap\Roblox\Player\RobloxPlayerBeta.exe"
 		$other = Read-Host "things to append to the subplace uri? (leave blank if none)"
@@ -96,13 +96,11 @@ while ($true) {
     }
     Start-Sleep -Seconds 1
 }
-Start-Sleep -Milliseconds 500
+Start-Sleep -Milliseconds 750
 
 netsh advfirewall firewall add rule name="subplace inbound" dir=in action=block program=$roblox enable=yes | Write-Verbose
 netsh advfirewall firewall add rule name="subplace outbound" dir=out action=block program=$roblox enable=yes | Write-Verbose
 Write-Host "internet disabled. joining subplace, do not press retry yet" -ForegroundColor Green
-
-Start-Sleep -Milliseconds 500
 
 Start-Process "roblox://experiences/start?placeId=${subplace}${other}"
 
