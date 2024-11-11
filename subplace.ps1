@@ -1,7 +1,7 @@
 <#
 subplace.ps1
 by kit
-version 4 !!!
+version 5 !!! release candiudate or smth idk. proabbly not final v5 maybe idk
 :3
 #>
 
@@ -35,21 +35,30 @@ if ($robloxPath -eq "$($env:LOCALAPPDATA)\Bloxstrap\Bloxstrap.exe") {
 } else {
 	$bootstrapper = "Roblox"
 	$roblox = $robloxPath
+	Write-Warning "this will probably not work w/o bloxstrap lol"
 }
-$other = ""
 
+$loop = 300
+$sleep = 0
+
+while ($true) {
+$other = ""
 while ($true) {
 	$answer = Read-Host "join a subplace [1] settings [2] about [3]"
 	if ($answer -eq "3") {
-		Write-Host "subplace.ps1 version 4. i think. made by kit (https://vyz.ee/)"
+		Write-Host "subplace.ps1 version 5. i think. made by kit. https://github.com/catb0x/subplace.ps1"
     } elseif ($answer -eq "2") {
 		Write-Host "leave anything blank if u dont want to change it"
 		$bootstrapperQ = Read-Host "bootstrapper name? (default: detected (Bloxstrap or Roblox))"
 		if ($bootstrapperQ -ne "") { $bootstrapper = $bootstrapperQ }
 		$robloxQ = Read-Host "roblox location? (default: detected (Bloxstrap path or Roblox path))"
 		if ($robloxQ -ne "") { $roblox = $robloxQ }
-		$otherQ = Read-Host "things to append to the subplace uri? (leave blank if none)"
-		if ($otherQ -ne "") { $other = $otherQ }
+		$otherQ = Read-Host "instance/job id?"
+		if ($otherQ -ne "") { $other = "&gameInstanceId=${otherQ}" }
+		$loopQ = Read-Host "milliseconds to wait until repeating loops? (default: 300)"
+		if ($loopQ -ne "") { $loop = $loopQ }
+		$sleepQ = Read-Host "milliseconds to sleep until joining subplace? (default: 0) (make higher if it breaks)"
+		if ($sleepQ -ne "") { $sleep = $sleepQ }
 	} elseif ($answer -eq "1") {
 		break
 	}
@@ -95,6 +104,8 @@ if ($placeId -eq $rootId) {
 	Write-Host "placeid has been found to be a subplace. joining..." -ForegroundColor Green
 }
 
+
+
 Start-Process "roblox://experiences/start?placeId=${rootId}"
 
 while ($true) {
@@ -104,15 +115,13 @@ while ($true) {
     } else {
         Write-Verbose "roblox is not in the foreground."
     }
-    Start-Sleep -Seconds 1
+    Start-Sleep -Milliseconds $loop
 }
-Start-Sleep -Milliseconds 500
 
+Start-Sleep -Milliseconds $sleep
 netsh advfirewall firewall add rule name="subplace inbound" dir=in action=block program=$roblox enable=yes | Write-Verbose
 netsh advfirewall firewall add rule name="subplace outbound" dir=out action=block program=$roblox enable=yes | Write-Verbose
 Write-Host "internet disabled. joining subplace, do not press retry yet" -ForegroundColor Green
-
-# Start-Sleep -Milliseconds 200
 
 Start-Process "roblox://experiences/start?placeId=${subplace}${other}"
 
@@ -123,7 +132,7 @@ while ($true) {
 	} else {
 		Write-Verbose "bootstrapper is not in the foreground."
 	}
-	Start-Sleep -Seconds 1
+	Start-Sleep -Milliseconds $loop
 }
 while ($true) {
 	if (Is-WindowInForeground $bootstrapper) {
@@ -132,9 +141,10 @@ while ($true) {
 		Write-Verbose "bootstrapper is in the background. enabling internet..."
 		break
 	}
-	Start-Sleep -Seconds 1
+	Start-Sleep -Milliseconds $loop
 }
 
 netsh advfirewall firewall delete rule name="subplace inbound" | Write-Verbose
 netsh advfirewall firewall delete rule name="subplace outbound" | Write-Verbose
 Write-Host "internet enabled. you can join now..." -ForegroundColor Green
+}
