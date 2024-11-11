@@ -57,7 +57,7 @@ while ($true) {
 		if ($otherQ -ne "") { $other = "&gameInstanceId=${otherQ}" }
 		$loopQ = Read-Host "milliseconds to wait until repeating loops? (default: 300)"
 		if ($loopQ -ne "") { $loop = $loopQ }
-		$sleepQ = Read-Host "milliseconds to sleep until joining subplace? (default: 0) (do 100 if joining main place maybe?)"
+		$sleepQ = Read-Host "milliseconds to sleep until joining subplace? (default: 0) (do 100-300 if it breaks maybe?)"
 		if ($sleepQ -ne "") { $sleep = $sleepQ }
 	} elseif ($answer -eq "1") {
 		break
