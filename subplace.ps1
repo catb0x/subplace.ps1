@@ -1,7 +1,7 @@
 <#
 subplace.ps1
 by kit
-version 5 !!! release candiudate or smth idk. proabbly not final v5 maybe idk
+version 5 !!! NOt release candidate oops this is final v5
 :3
 #>
 
