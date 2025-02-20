@@ -1,3 +1,5 @@
+# i am not updating this anymore go to https://github.com/catb0x/subplace for an updated gui versiob
+
 # ![](https://pixels.crd.co/assets/images/gallery58/ca8c8959.gif) subplace.ps1
 subplace.ps1 lets you join some subplaces on roblox ^_^
 download [here](https://raw.githubusercontent.com/catb0x/subplace.ps1/refs/heads/main/subplace.ps1)
